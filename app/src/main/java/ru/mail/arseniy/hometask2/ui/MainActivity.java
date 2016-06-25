@@ -3,6 +3,7 @@ package ru.mail.arseniy.hometask2.ui;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.json.JSONException;
 
@@ -21,6 +22,8 @@ import ru.mail.arseniy.hometask2.Tech;
 import ru.mail.arseniy.hometask2.db.DataBaseHelper;
 
 public class MainActivity extends AppCompatActivity {
+
+    LoadDataTask task;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
                 List<Tech> items = JsonParser.parse(data);
 
+                dbHelper.deleteTech();
+                dbHelper.insertTech(dbHelper.getWritableDatabase(),items);
+
                 return true;
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
@@ -64,6 +70,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        Log.i("TAG", "Actvity main onResume");
         super.onResume();
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        task = new LoadDataTask();
+        task.execute();
     }
 }
