@@ -1,5 +1,6 @@
 package ru.mail.arseniy.hometask2.ui;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ import ru.mail.arseniy.hometask2.StreamData;
 import ru.mail.arseniy.hometask2.Tech;
 import ru.mail.arseniy.hometask2.db.DataBaseHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Listener {
 
     LoadDataTask task;
 
@@ -33,7 +34,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onLoaded() {
+        Intent i = new Intent(MainActivity.this, ScreenSlideActivity.class);
+        startActivity(i);
+    }
+
     private static class LoadDataTask extends AsyncTask<Void,Void, Boolean> {
+
+        private Listener listener;
+
+        public LoadDataTask(Listener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            listener.onLoaded();
+        }
 
         @Override
         protected Boolean doInBackground(Void... params) {
@@ -52,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 List<Tech> items = JsonParser.parse(data);
 
                 dbHelper.deleteTech();
-                dbHelper.insertTech(dbHelper.getWritableDatabase(),items);
+                dbHelper.insertTech(dbHelper.getWritableDatabase(), items);
 
                 return true;
             } catch (IOException | JSONException e) {
@@ -80,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        task = new LoadDataTask();
+        task = new LoadDataTask(this);
         task.execute();
     }
 }
