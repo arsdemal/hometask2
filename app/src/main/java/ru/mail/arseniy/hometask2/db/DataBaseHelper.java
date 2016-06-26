@@ -2,6 +2,7 @@ package ru.mail.arseniy.hometask2.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -34,6 +35,10 @@ public class  DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public Cursor getAllData(SQLiteDatabase db) {
+        return db.query("technology", null, null, null, null, null, null);
     }
 
     public void insertTech(SQLiteDatabase db, List<Tech> teches) {
