@@ -23,10 +23,11 @@ public class  DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String create = "create table technology (" +
-                "id integer primary key autoincrement," +
-                "picture text," +
-                "title text," +
+        String create = "create table technology ( " +
+                "_id integer primary key autoincrement, " +
+                "id integer, " +
+                "picture text, " +
+                "title text, " +
                 "info text )";
         db.execSQL(create);
 
@@ -34,17 +35,19 @@ public class  DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("drop table if exists technology");
+        onCreate(db);
     }
 
     public Cursor getAllData(SQLiteDatabase db) {
-        return db.query("technology", null, null, null, null, null, null);
+        return db.rawQuery("select rowid _id,* from technology", null, null);
     }
 
     public void insertTech(SQLiteDatabase db, List<Tech> teches) {
         Log.i("TAG", "Insert db");
         for ( Tech tech: teches) {
             ContentValues cv = new ContentValues();
+            cv.put("id",tech.id);
             cv.put("picture",tech.picture);
             cv.put("title",tech.title);
             cv.put("info",tech.info);
@@ -54,5 +57,8 @@ public class  DataBaseHelper extends SQLiteOpenHelper {
 
     public void deleteTech() {
         Log.i("TAG","Delete db");
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("technology",null,null);
+        db.close();
     }
 }

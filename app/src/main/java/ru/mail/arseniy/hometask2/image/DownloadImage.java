@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 
 public class DownloadImage {
+
     public Bitmap getBitmapFromURL(String src) {
         try {
             java.net.URL url = new java.net.URL(src);
